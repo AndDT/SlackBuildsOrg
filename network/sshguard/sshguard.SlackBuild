@@ -25,7 +25,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=sshguard
-VERSION=${VERSION:-1.7.0}
+VERSION=${VERSION:-2.4.2}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -84,7 +84,6 @@ CXXFLAGS="$SLKCFLAGS" \
 ./configure \
   --prefix=/usr \
   --mandir=/usr/man \
-  --with-firewall=iptables \
   --build=$ARCH-slackware-linux
 
 make
@@ -100,8 +99,7 @@ find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
-cp -a doc/{developers,setup,sshguard.8}.rst examples CHANGELOG.rst COPYING \
-  README.rst $PKG/usr/doc/$PRGNAM-$VERSION
+cp -a examples *.rst COPYING $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 
 mkdir -p $PKG/install
