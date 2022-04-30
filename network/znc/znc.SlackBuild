@@ -26,7 +26,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=znc
-VERSION=${VERSION:-1.7.5}
+VERSION=${VERSION:-1.8.2}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -35,14 +35,14 @@ ZNC_USER=${ZNC_USER:-znc}
 WITH_SSL=${WITH_SSL:-yes}
 WITH_IPV6=${WITH_IPV6:-yes}
 WITH_PERL=${WITH_PERL:-no}
-WITH_cyrus=${WITH_CYRUS:-yes}
+WITH_CYRUS=${WITH_CYRUS:-yes}
 WITH_PYTHON=${WITH_PYTHON:-no}
 WITH_SWIG=${WITH_SWIG:-no}
 WITH_TCL=${WITH_TCL:-no}
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
-    i?86) ARCH=i486 ;;
+    i?86) ARCH=i586 ;;
     arm*) ARCH=arm ;;
        *) ARCH=$( uname -m ) ;;
   esac
@@ -60,8 +60,8 @@ TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-if [ "$ARCH" = "i486" ]; then
-   SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+if [ "$ARCH" = "i586" ]; then
+   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
    LIBDIRSUFFIX=""
 elif [ "$ARCH" = "i686" ]; then
    SLKCFLAGS="-O2 -march=i686 -mtune=i686"
@@ -81,7 +81,7 @@ if ! grep -q "^$ZNC_USER:" /etc/passwd; then
   exit 1
 fi
 
-set -e
+set -euo pipefail
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
