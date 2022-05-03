@@ -23,7 +23,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=doomseeker
-VERSION=${VERSION:-1.3.2}
+VERSION=${VERSION:-1.3.3}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -61,7 +61,7 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
+set -euo pipefail
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -110,8 +110,8 @@ mv $PKG/usr/bin $PKG/usr/games
 # cmake is also ignoring -DCMAKE_INSTALL_DOCDIR.
 PKGDOC=$PKG/usr/doc/$PRGNAM-$VERSION
 mkdir -p $PKGDOC
-mv $PKG/usr/share/doc/$PRGNAM/* $PKGDOC
-rm -rf $PKG/usr/share/doc
+mv $PKG/usr/share/doc/$PRGNAM/* $PKGDOC || true
+rm -rf $PKG/usr/share/doc || true
 
 chmod 755 $PKG/usr/lib$LIBDIRSUFFIX/$PRGNAM/engines/*.so
 strip $PKG/usr/lib$LIBDIRSUFFIX/$PRGNAM/engines/*.so
