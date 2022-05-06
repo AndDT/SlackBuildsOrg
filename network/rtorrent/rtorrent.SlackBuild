@@ -13,7 +13,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=rtorrent
-VERSION=${VERSION:-0.9.7}
+VERSION=${VERSION:-0.9.8}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -54,7 +54,7 @@ fi
 
 xmlrpcc="" ; [ -x /usr/bin/xmlrpc-c-config ] && xmlrpcc="--with-xmlrpc-c"
 
-set -e
+set -euo pipefail
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
