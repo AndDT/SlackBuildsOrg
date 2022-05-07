@@ -42,7 +42,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=strongswan
-VERSION=${VERSION:-5.9.5}
+VERSION=${VERSION:-5.9.6}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -122,7 +122,7 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
+set -euo pipefail
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -148,7 +148,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --docdir=/usr/doc/$PRGNAM-$VERSION \
   --build=$ARCH-slackware-linux \
   ${CONFIG_OPTS:-$DEFAULT_CONFIG_OPTS} \
-  $EXTRA_CONFIG_OPTS
+  ${EXTRA_CONFIG_OPTS:-}
 
 make
 make install DESTDIR=$PKG
