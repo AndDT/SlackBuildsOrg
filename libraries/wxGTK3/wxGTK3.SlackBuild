@@ -35,12 +35,13 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=wxGTK3
-VERSION=${VERSION:-3.0.5}
+VERSION=${VERSION:-3.1.6}
 BUILD=${BUILD:-4}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
 
 SRCNAM=wxWidgets
+VERSUFFIX=${VERSUFFIX:--final}
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -95,14 +96,14 @@ else
   st="--enable-shared"
 fi
 
-set -e
+set -euo pipefail
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $SRCNAM-$VERSION
+rm -rf $SRCNAM-$VERSION${VERSUFFIX}
 tar xvf $CWD/$SRCNAM-$VERSION.tar.gz
-cd $SRCNAM-$VERSION
+cd $SRCNAM-$VERSION${VERSUFFIX}
 chown -R root:root .
 find -L . \
  \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
