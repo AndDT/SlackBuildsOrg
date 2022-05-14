@@ -50,6 +50,16 @@ TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
+if [ "$ARCH" = "i586" ]; then
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+  LIBDIRSUFFIX="64"
+else
+  LIBDIRSUFFIX=""
+fi
+
 set -euo pipefail
 
 rm -rf $PKG
@@ -72,14 +82,19 @@ cd build
     -DGLM_TEST_ENABLE=OFF \
     -DGLM_TEST_ENABLE_CXX_11=OFF ..
   make
-  make DESTDIR="$PKG" install
 cd ..
 
-exit 0
+mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig $PKG/usr/include
+cp -av cmake $PKG/usr/lib${LIBDIRSUFFIX}
+cp -av glm $PKG/usr/include
+cat $CWD/glm.pc > $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/glm.pc
 
-mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
+mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION/html
+cp -av doc/* $PKG/usr/doc/$PRGNAM-$VERSION/html
 cp -a *.md $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
+find $PKG -type d -exec chown 0755 "{}" \;
+find $PKG -type f -exec chown 0644 "{}" \;
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
