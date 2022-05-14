@@ -54,7 +54,7 @@ OUTPUT=${OUTPUT:-/tmp}
 
 DOCFILES="AUTHORS COPYING COPYING.LIB ChangeLog LICENSE NEWS PLAN
           README README.betatester README.developer README.multicast
-	  README.freqranges THANKS TODO"
+	  README.freqranges THANKS"
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -153,9 +153,6 @@ find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | gr
 
 find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
-
-rm -f $PKG/usr/info/dir
-gzip -9 $PKG/usr/info/*.info*
 
 if [ x"${PL_MOD}" = x"yes" ]; then
   find $PKG -name perllocal.pod \
