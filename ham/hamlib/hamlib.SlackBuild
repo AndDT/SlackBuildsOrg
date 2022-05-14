@@ -27,7 +27,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=hamlib
-VERSION=${VERSION:-3.3}
+VERSION=${VERSION:-4.4}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -52,8 +52,9 @@ TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-DOCFILES="AUTHORS COPYING COPYING.LIB ChangeLog INSTALL LICENSE NEWS PLAN
-          README README.betatester README.developer THANKS TODO"
+DOCFILES="AUTHORS COPYING COPYING.LIB ChangeLog LICENSE NEWS PLAN
+          README README.betatester README.developer README.multicast
+	  README.freqranges THANKS TODO"
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -69,7 +70,7 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
+set -euo pipefail
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -83,6 +84,12 @@ find -L . \
   -o -perm 511 \) -exec chmod 755 {} \; -o \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+PL_MOD=${PL_MOD:-yes}
+PY_MOD=${PY_MOD:-no}
+PY3_MOD=${PY3_MOD:-yes}
+TCL_MOD=${TCL_MOD:-yes}
+LUA_VER=${LUA_VER:-5.3}
 
 if [ x"${PL_MOD}" = x"yes" ]; then
   PERL_BINDING="--with-perl-binding"
@@ -98,7 +105,7 @@ else
 fi
 
 if [ x"${PY3_MOD}" = x"yes" ]; then
-  export PYTHON=`which python3`
+  export PYTHON=`command -v python3`
   PYV=`python3 -c "import sys;t='{v[0]}.{v[1]}'.format(v=list(sys.version_info[:2]));sys.stdout.write(t)";`
 fi
 
