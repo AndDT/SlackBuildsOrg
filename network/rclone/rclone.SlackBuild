@@ -29,8 +29,6 @@ BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
 
-set -e
-
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
     i?86) ARCH=i586 ;;
@@ -39,12 +37,14 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-if [ "$ARCH" = "x86_64" ]; then
-  BIT="64bit"
-else
-  echo "$ARCH is not supported."
-  exit 1
-fi
+case "$ARCH" in
+  x86_64) _arch=amd64 ;;
+  i586) _arch=386 ;;
+  * )
+    echo "$ARCH is not supported."
+    exit 1
+  ;;
+esac
 
 # If the variable PRINT_PACKAGE_NAME is set, then this script will report what
 # the name of the created package would be, and then exit. This information
@@ -54,6 +54,8 @@ if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
   exit 0
 fi
 
+set -euo pipefail
+
 TMP=${TMP:-/tmp/SBo}
 CWD=$(pwd)
 PKG=$TMP/package-$PRGNAM
@@ -61,8 +63,8 @@ OUTPUT=${OUTPUT:-/tmp}
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-unzip -o $CWD/$PRGNAM-v$VERSION-linux-amd64.zip
-cd $PRGNAM-v$VERSION-linux-amd64
+unzip -o $CWD/$PRGNAM-v$VERSION-linux-${_arch}.zip
+cd $PRGNAM-v$VERSION-linux-${_arch}
 chown -R root:root .
 
 find -L . \
@@ -81,8 +83,8 @@ find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/ -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
-cp -a README.txt $PKG/usr/doc/$PRGNAM-$VERSION
-cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM-bin.SlackBuild
+cp -a README.* $PKG/usr/doc/$PRGNAM-$VERSION
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
