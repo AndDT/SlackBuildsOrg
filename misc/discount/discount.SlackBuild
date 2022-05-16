@@ -25,7 +25,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=discount
-VERSION=${VERSION:-2.2.7}
+VERSION=${VERSION:-2.2.7b}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -64,7 +64,7 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
+set -euo pipefail
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -123,7 +123,7 @@ fi
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp -a \
   COPYRIGHT CREDITS README VERSION \
-  $PKG/usr/doc/$PRGNAM-$VERSION
+  $PKG/usr/doc/$PRGNAM-$VERSION || true
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 
 mkdir -p $PKG/install
