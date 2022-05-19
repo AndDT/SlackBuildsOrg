@@ -9,7 +9,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=nethogs
-VERSION=${VERSION:-0.8.5}
+VERSION=${VERSION:-0.8.6}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -34,7 +34,7 @@ TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-/tmp}
 
-set -e
+set -euo pipefail
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -71,9 +71,11 @@ fi
 sed -i -e 's/+2/+2 -/' ./determineVersion.sh
 
 make PREFIX="/usr"
-make PREFIX="/usr" libnethogs
-
 make PREFIX="/usr" DESTDIR=$PKG install
+
+make clean
+
+make PREFIX="/usr" libnethogs
 make PREFIX="/usr" DESTDIR=$PKG install_lib
 
 # move man file to proper place
@@ -83,7 +85,7 @@ gzip -9 $PKG/usr/man/man8/*.?
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cd $TMP/$PRGNAM-$VERSION/
-cp -a DESIGN Changelog INSTALL README.* $PKG/usr/doc/$PRGNAM-$VERSION
+cp -a DESIGN COPYING README* $PKG/usr/doc/$PRGNAM-$VERSION  || true
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 
 mkdir -p $PKG/install
