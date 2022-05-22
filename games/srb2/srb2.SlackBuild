@@ -9,7 +9,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=srb2
-VERSION=${VERSION:-2.2.9}
+VERSION=${VERSION:-2.2.10}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -54,7 +54,7 @@ rm -rf SRB2-SRB2_release_$VERSION
 
 # There's a lot of stuff in the source that we don't need. All the
 # --exclude stuff saves 182MB of space in $TMP.
-tar xvf $CWD/SRB2-SRB2_release_$VERSION.tar.gz \
+tar xvf $CWD/SRB2_release_$VERSION.tar.gz \
   --exclude '*/libs' \
   --exclude '*/android' \
   --exclude '*/windows-installer' \
@@ -90,6 +90,13 @@ find -L .  -perm /111 -a \! -perm 755 -a -exec chmod 755 {} \+ -o \
 # /usr/share/games, not /usr/games, so sed-fest:
 sed -i 's,usr/games,usr/share/games,g' \
        src/sdl/i_system.c src/sdl/i_ttf.c
+
+#OPENMPT_INCLUDE_DIR=
+#OPENMPT_LIBRARY=
+#GME_INCLUDE_DIR=<not found>
+#GME_LIBRARY=<not found>
+#SRB2_CONFIG_USEASM=ON
+#SRB2_CONFIG_YASM=ON
 
 mkdir -p build
 cd build
