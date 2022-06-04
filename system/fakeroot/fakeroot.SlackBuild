@@ -27,7 +27,7 @@ cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=fakeroot
 VERSION=${VERSION:-1.25.3}
-BUILD=${BUILD:-2}
+BUILD=${BUILD:-3}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
 
@@ -83,6 +83,37 @@ find -L . \
 for i in $CWD/patches/* ; do patch -p1 < $i ; done
 
 ./bootstrap
+
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+./configure \
+  --prefix=/usr \
+  --libdir=/usr/lib${LIBDIRSUFFIX} \
+  --sysconfdir=/etc \
+  --localstatedir=/var \
+  --mandir=/usr/man \
+  --docdir=/usr/doc/$PRGNAM-$VERSION \
+  --disable-static \
+  --with-ipc=tcp \
+  --build=$ARCH-slackware-linux
+
+make
+make DESTDIR=$PKG install-exec
+
+mv -v "$PKG/usr/lib/libfakeroot-0.so" "$PKG/usr/lib/libfakeroot-tcp-0.so"
+cd "$PKG/usr/lib"
+  ln -s libfakeroot-tcp-0.so ./libfakeroot-tcp.so
+cd -
+mv -v "$PKG/usr/bin/faked" "$PKG/usr/bin/faked-tcp"
+mv -v "$PKG/usr/bin/fakeroot" "$PKG/usr/bin/fakeroot-tcp"
+sed -e "s:usage\: fakeroot:usage\: fakeroot-tcp:g" \
+    -e "s:FAKEROOT_LIB=libfakeroot.so:FAKEROOT_LIB=libfakeroot-tcp.so:g" \
+    -e 's:FAKED=${FAKEROOT_BINDIR}/faked:FAKED=${FAKEROOT_BINDIR}/faked-tcp:g' \
+    -e "s:fakeroot version:fakeroot-tcp version:g" \
+    -e 's:"fakeroot\: $i":"fakeroot-tcp\: $i":g' \
+    -i "$PKG/usr/bin/fakeroot-tcp"
+
+make clean
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
