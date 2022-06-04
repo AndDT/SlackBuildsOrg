@@ -110,6 +110,9 @@ find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | gr
 find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
 
+mv -v "$PKG/usr/bin/pscp" "$PKG/usr/bin/putty-pscp"
+mv -v "$PKG/usr/man/man1/pscp.1.gz" "$PKG/usr/man/man1/putty-pscp.1.gz"
+
 cp $CWD/putty.desktop $PKG/usr/share/applications/putty.desktop
 cp $CWD/putty.png $PKG/usr/share/pixmaps/putty.png
 
